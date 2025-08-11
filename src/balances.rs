@@ -13,6 +13,22 @@ impl Pallet {
 	pub fn balance(&self, who: &String) -> u128 {
 		*self.balances.get(who).unwrap_or(&0)
 	}
+	pub fn transfer(
+		&mut self,
+		from: &String,
+		to: &String,
+		amount: u128,
+	) -> Result<(), &'static str> {
+		//get user balance
+		let current_senders_new_bal =
+			self.balance(from).checked_sub(amount).ok_or("Not enough funds.")?;
+		//get recipients balance
+		let recipients_bal = self.balance(to).checked_add(amount).ok_or("Overflow")?;
+		// updates to the balances
+		self.set_balance(from, current_senders_new_bal);
+		self.set_balance(to, recipients_bal);
+		Ok(())
+	}
 }
 #[test]
 fn init_balances() {
@@ -21,4 +37,6 @@ fn init_balances() {
 	balances.set_balance(&"alice".to_string(), 100);
 	assert_eq!(balances.balance(&"alice".to_string()), 100);
 	assert_eq!(balances.balance(&"bob".to_string()), 0);
+	balances.transfer(&"alice".to_string(), &"bob".to_string(), 50).is_ok();
+	assert_eq!(balances.balance(&"bob".to_string()), 50);
 }
