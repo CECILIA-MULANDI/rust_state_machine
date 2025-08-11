@@ -8,7 +8,7 @@ pub struct Runtime {
 }
 impl Runtime {
 	fn new() -> Self {
-		Runtime { system: system::Pallet::new(), balances: balances::Pallet::new() }
+		Self { system: system::Pallet::new(), balances: balances::Pallet::new() }
 	}
 }
 fn main() {
