@@ -1,4 +1,6 @@
 use std::collections::BTreeMap;
+type AccountId = String;
+type Balance = u128;
 //state and entry point
 #[derive(Debug)]
 pub struct Pallet {
@@ -40,7 +42,25 @@ mod test {
 		balances.set_balance(&"alice".to_string(), 100);
 		assert_eq!(balances.balance(&"alice".to_string()), 100);
 		assert_eq!(balances.balance(&"bob".to_string()), 0);
-		balances.transfer(&"alice".to_string(), &"bob".to_string(), 50).is_ok();
-		assert_eq!(balances.balance(&"bob".to_string()), 50);
+		// balances.transfer(&"alice".to_string(), &"bob".to_string(), 50).is_ok();
+		// assert_eq!(balances.balance(&"bob".to_string()), 50);
+	}
+	#[test]
+	fn transfer_balance() {
+		let mut balances = super::Pallet::new();
+		assert_eq!(
+			balances.transfer("alice".to_string(), "bob".to_string(), 51),
+			Err("Not enough funds.")
+		);
+
+		balances.set_balance(&"alice".to_string(), 100);
+		assert_eq!(balances.transfer("alice".to_string(), "bob".to_string(), 51), Ok(()));
+		assert_eq!(balances.balance(&"alice".to_string()), 49);
+		assert_eq!(balances.balance(&"bob".to_string()), 51);
+
+		assert_eq!(
+			balances.transfer("alice".to_string(), "bob".to_string(), 51),
+			Err("Not enough funds.")
+		);
 	}
 }

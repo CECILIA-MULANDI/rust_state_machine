@@ -27,4 +27,5 @@ fn main() {
 	let _res = runtime.balances.transfer(&alice, &bob, 30).map_err(|e| eprintln!("{e}"));
 	runtime.system.inc_nonce(&alice);
 	let _res = runtime.balances.transfer(&alice, &charlie, 20).map_err(|e| eprintln!("{e}"));
+	println!("The current runtime: {:#?}", runtime);
 }
