@@ -4,23 +4,23 @@ type Balance = u128;
 //state and entry point
 #[derive(Debug)]
 pub struct Pallet {
-	balances: BTreeMap<String, u128>,
+	balances: BTreeMap<AccountId, Balance>,
 }
 impl Pallet {
 	pub fn new() -> Self {
 		Self { balances: BTreeMap::new() }
 	}
-	pub fn set_balance(&mut self, who: &String, amount: u128) {
+	pub fn set_balance(&mut self, who: &AccountId, amount: Balance) {
 		self.balances.insert(who.clone(), amount);
 	}
-	pub fn balance(&self, who: &String) -> u128 {
+	pub fn balance(&self, who: &AccountId) -> Balance {
 		*self.balances.get(who).unwrap_or(&0)
 	}
 	pub fn transfer(
 		&mut self,
-		from: &String,
-		to: &String,
-		amount: u128,
+		from: &AccountId,
+		to: &AccountId,
+		amount: Balance,
 	) -> Result<(), &'static str> {
 		//get user balance
 		let current_senders_new_bal =
