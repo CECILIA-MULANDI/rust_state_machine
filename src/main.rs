@@ -19,14 +19,17 @@ pub struct Runtime {
 	system: system::Pallet<Self>,
 	balances: balances::Pallet<Self>,
 }
+
 impl system::Config for Runtime {
 	type AccountId = types::AccountId;
 	type BlockNumber = types::BlockNumber;
 	type Nonce = types::Nonce;
 }
+
 impl balances::Config for Runtime {
 	type Balance = types::Balance;
 }
+
 impl Runtime {
 	fn new() -> Self {
 		Self { system: system::Pallet::new(), balances: balances::Pallet::new() }
@@ -50,7 +53,7 @@ impl Runtime {
 }
 impl crate::support::Dispatch for Runtime {
 	type Caller = <Runtime as system::Config>::AccountId;
-	type Call = Runtime;
+	type Call = RuntimeCall;
 	fn dispatch(
 		&mut self,
 		caller: Self::Caller,
