@@ -20,12 +20,18 @@ impl<T: Config> Pallet<T> {
 		*self.balances.get(who).unwrap_or(&T::Balance::zero())
 	}
 
+	/*************  ✨ Windsurf Command ⭐  *************/
+	/// Transfer `amount` from one account to another.
+	/// This function verifies that `from` has at least `amount` balance to transfer,
+	/// and that no mathematical overflows occur.
+	/// Returns `Ok(())` if the transfer was successful, or an error if it was not.
+	/*******  1d417edd-1e85-4a9a-aaa2-e5ac25ea4abe  *******/
 	pub fn transfer(
 		&mut self,
 		from: &T::AccountId,
 		to: &T::AccountId,
 		amount: T::Balance,
-	) -> Result<(), &'static str> {
+	) -> crate::support::DispatchResult {
 		//get user balance
 		let current_senders_new_bal =
 			self.balance(from).checked_sub(&amount).ok_or("Not enough funds.")?;
