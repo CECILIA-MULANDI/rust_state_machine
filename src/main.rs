@@ -66,22 +66,35 @@ impl crate::support::Dispatch for Runtime {
 				self.balances.transfer(caller, to, amount)?;
 			},
 		}
+		Ok(())
 	}
 }
 fn main() {
 	// create runtime instance
 	let mut runtime = Runtime::new();
-	let alice = "alice".to_string();
-	let bob = "bob".to_string();
-	let charlie = "charlie".to_string();
-	runtime.balances.set_balance(&alice, 100);
-	// block emulation
-	runtime.system.inc_block_number();
-	assert_eq!(runtime.system.block_number(), 1);
-	//first transaction
-	runtime.system.inc_nonce(&alice);
-	let _res = runtime.balances.transfer(&alice, &bob, 30).map_err(|e| eprintln!("{e}"));
-	runtime.system.inc_nonce(&alice);
-	let _res = runtime.balances.transfer(&alice, &charlie, 20).map_err(|e| eprintln!("{e}"));
+	// let alice = "alice".to_string();
+	// let bob = "bob".to_string();
+	// let charlie = "charlie".to_string();
+	// runtime.balances.set_balance(&alice, 100);
+	// // block emulation
+	// runtime.system.inc_block_number();
+	// assert_eq!(runtime.system.block_number(), 1);
+	// //first transaction
+	// runtime.system.inc_nonce(&alice);
+	// let _res = runtime.balances.transfer(alice.clone(), bob, 30).map_err(|e| eprintln!("{e}"));
+	// runtime.system.inc_nonce(&alice);
+	// let _res = runtime
+	// 	.balances
+	// 	.transfer(alice.clone(), charlie, 20)
+	// 	.map_err(|e| eprintln!("{e}"));
+	//Advanced Block creation logic
+	let block_1 = types::Block {
+		header: support::Header { block_number: 1 },
+		extrinsic: vec![support::Extrinsic {
+			caller: &"alice",
+			call: RuntimeCall::BalancesTransfer { to: &"bob", amount: 69 },
+		}],
+	};
+	runtime.execute_block(block_1).expect("Invalid block");
 	println!("The current runtime: {:#?}", runtime);
 }

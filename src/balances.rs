@@ -28,18 +28,18 @@ impl<T: Config> Pallet<T> {
 	/*******  1d417edd-1e85-4a9a-aaa2-e5ac25ea4abe  *******/
 	pub fn transfer(
 		&mut self,
-		from: &T::AccountId,
-		to: &T::AccountId,
+		from: T::AccountId,
+		to: T::AccountId,
 		amount: T::Balance,
 	) -> crate::support::DispatchResult {
 		//get user balance
 		let current_senders_new_bal =
-			self.balance(from).checked_sub(&amount).ok_or("Not enough funds.")?;
+			self.balance(&from).checked_sub(&amount).ok_or("Not enough funds.")?;
 		//get recipients balance
-		let recipients_bal = self.balance(to).checked_add(&amount).ok_or("Overflow")?;
+		let recipients_bal = self.balance(&to).checked_add(&amount).ok_or("Overflow")?;
 		// updates to the balances
-		self.set_balance(from, current_senders_new_bal);
-		self.set_balance(to, recipients_bal);
+		self.set_balance(&from, current_senders_new_bal);
+		self.set_balance(&to, recipients_bal);
 		Ok(())
 	}
 }
