@@ -90,9 +90,9 @@ fn main() {
 	//Advanced Block creation logic
 	let block_1 = types::Block {
 		header: support::Header { block_number: 1 },
-		extrinsic: vec![support::Extrinsic {
-			caller: &"alice",
-			call: RuntimeCall::BalancesTransfer { to: &"bob", amount: 69 },
+		extrinsics: vec![support::Extrinsic {
+			caller: "alice".to_string(),
+			call: RuntimeCall::BalancesTransfer { to: "bob".to_string(), amount: 69 },
 		}],
 	};
 	runtime.execute_block(block_1).expect("Invalid block");
