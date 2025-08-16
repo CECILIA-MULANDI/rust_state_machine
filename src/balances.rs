@@ -20,12 +20,6 @@ impl<T: Config> Pallet<T> {
 		*self.balances.get(who).unwrap_or(&T::Balance::zero())
 	}
 
-	/*************  ✨ Windsurf Command ⭐  *************/
-	/// Transfer `amount` from one account to another.
-	/// This function verifies that `from` has at least `amount` balance to transfer,
-	/// and that no mathematical overflows occur.
-	/// Returns `Ok(())` if the transfer was successful, or an error if it was not.
-	/*******  1d417edd-1e85-4a9a-aaa2-e5ac25ea4abe  *******/
 	pub fn transfer(
 		&mut self,
 		from: T::AccountId,
@@ -40,6 +34,25 @@ impl<T: Config> Pallet<T> {
 		// updates to the balances
 		self.set_balance(&from, current_senders_new_bal);
 		self.set_balance(&to, recipients_bal);
+		Ok(())
+	}
+}
+pub enum Call<T: Config> {
+	Transfer { to: T::AccountId, amount: T::Balance },
+}
+impl<T: Config> crate::support::Dispatch for Pallet<T> {
+	type Caller = T::AccountId;
+	type Call = Call<T>;
+	fn dispatch(
+		&mut self,
+		caller: Self::Caller,
+		call: Self::Call,
+	) -> crate::support::DispatchResult {
+		match call {
+			Call::Transfer { to, amount } => {
+				self.transfer(caller, to, amount)?;
+			},
+		}
 		Ok(())
 	}
 }

@@ -72,10 +72,10 @@ impl crate::support::Dispatch for Runtime {
 fn main() {
 	// create runtime instance
 	let mut runtime = Runtime::new();
-	// let alice = "alice".to_string();
-	// let bob = "bob".to_string();
-	// let charlie = "charlie".to_string();
-	// runtime.balances.set_balance(&alice, 100);
+	let alice = "alice".to_string();
+	let bob = "bob".to_string();
+	let charlie = "charlie".to_string();
+	runtime.balances.set_balance(&alice, 1000);
 	// // block emulation
 	// runtime.system.inc_block_number();
 	// assert_eq!(runtime.system.block_number(), 1);
@@ -90,10 +90,16 @@ fn main() {
 	//Advanced Block creation logic
 	let block_1 = types::Block {
 		header: support::Header { block_number: 1 },
-		extrinsics: vec![support::Extrinsic {
-			caller: "alice".to_string(),
-			call: RuntimeCall::BalancesTransfer { to: "bob".to_string(), amount: 69 },
-		}],
+		extrinsics: vec![
+			support::Extrinsic {
+				caller: alice.clone(),
+				call: RuntimeCall::BalancesTransfer { to: bob, amount: 69 },
+			},
+			support::Extrinsic {
+				caller: alice.clone(),
+				call: RuntimeCall::BalancesTransfer { to: charlie, amount: 69 },
+			},
+		],
 	};
 	runtime.execute_block(block_1).expect("Invalid block");
 	println!("The current runtime: {:#?}", runtime);
