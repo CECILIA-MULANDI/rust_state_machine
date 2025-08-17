@@ -19,43 +19,45 @@ impl<T: Config> Pallet<T> {
 	pub fn balance(&self, who: &T::AccountId) -> T::Balance {
 		*self.balances.get(who).unwrap_or(&T::Balance::zero())
 	}
-
+}
+#[macros::call]
+impl<T: Config> Pallet<T> {
 	pub fn transfer(
 		&mut self,
-		from: T::AccountId,
+		caller: T::AccountId,
 		to: T::AccountId,
 		amount: T::Balance,
 	) -> crate::support::DispatchResult {
 		//get user balance
 		let current_senders_new_bal =
-			self.balance(&from).checked_sub(&amount).ok_or("Not enough funds.")?;
+			self.balance(&caller).checked_sub(&amount).ok_or("Not enough funds.")?;
 		//get recipients balance
 		let recipients_bal = self.balance(&to).checked_add(&amount).ok_or("Overflow")?;
 		// updates to the balances
-		self.set_balance(&from, current_senders_new_bal);
-		self.set_balance(&to, recipients_bal);
+		self.balances.insert(caller, current_senders_new_bal);
+		self.balances.insert(to, recipients_bal);
 		Ok(())
 	}
 }
-pub enum Call<T: Config> {
-	Transfer { to: T::AccountId, amount: T::Balance },
-}
-impl<T: Config> crate::support::Dispatch for Pallet<T> {
-	type Caller = T::AccountId;
-	type Call = Call<T>;
-	fn dispatch(
-		&mut self,
-		caller: Self::Caller,
-		call: Self::Call,
-	) -> crate::support::DispatchResult {
-		match call {
-			Call::Transfer { to, amount } => {
-				self.transfer(caller, to, amount)?;
-			},
-		}
-		Ok(())
-	}
-}
+// pub enum Call<T: Config> {
+// 	Transfer { to: T::AccountId, amount: T::Balance },
+// }
+// impl<T: Config> crate::support::Dispatch for Pallet<T> {
+// 	type Caller = T::AccountId;
+// 	type Call = Call<T>;
+// 	fn dispatch(
+// 		&mut self,
+// 		caller: Self::Caller,
+// 		call: Self::Call,
+// 	) -> crate::support::DispatchResult {
+// 		match call {
+// 			Call::Transfer { to, amount } => {
+// 				self.transfer(caller, to, amount)?;
+// 			},
+// 		}
+// 		Ok(())
+// 	}
+// }
 #[cfg(test)]
 mod test {
 	struct TestConfig;
