@@ -12,4 +12,3 @@ impl<T: Config> Pallet<T> {
 		Self { claims: BTreeMap::new() }
 	}
 }
-P

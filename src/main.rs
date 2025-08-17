@@ -1,9 +1,11 @@
 // use crate::balances::Pallet;
 // use crate::system::Pallet;
-use crate::support::Dispatch;
+
 mod balances;
+mod proof_of_existence;
 mod support;
 mod system;
+use crate::support::Dispatch;
 mod types {
 	pub type AccountId = String;
 	pub type Balance = u128;
